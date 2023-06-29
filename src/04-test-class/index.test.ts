@@ -1,5 +1,15 @@
 // Uncomment the code below and write your tests
-import { InsufficientFundsError, TransferFailedError, getBankAccount } from '.';
+import lodash from 'lodash';
+import {
+  InsufficientFundsError,
+  SynchronizationFailedError,
+  TransferFailedError,
+  getBankAccount,
+} from '.';
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
 
 describe('BankAccount', () => {
   test('should create account with initial balance', () => {
@@ -75,14 +85,61 @@ describe('BankAccount', () => {
   });
 
   test('fetchBalance should return number in case if request did not failed', async () => {
-    // Write your tests here
+    const randomBalance = 100;
+    const requestFailed = 1;
+    const spy = jest.spyOn(lodash, 'random');
+    spy
+      .mockImplementationOnce(() => {
+        return randomBalance;
+      })
+      .mockImplementationOnce(() => {
+        return requestFailed;
+      });
+
+    const balance = 322;
+    const account = getBankAccount(balance);
+
+    const expected = expect.any(Number);
+    await expect(account.fetchBalance()).resolves.toEqual(expected);
   });
 
   test('should set new balance if fetchBalance returned number', async () => {
-    // Write your tests here
+    const randomBalance = 100;
+    const requestFailed = 1;
+    const spy = jest.spyOn(lodash, 'random');
+    spy
+      .mockImplementationOnce(() => {
+        return randomBalance;
+      })
+      .mockImplementationOnce(() => {
+        return requestFailed;
+      });
+
+    const balance = 322;
+    const account = getBankAccount(balance);
+
+    await account.synchronizeBalance();
+
+    expect(account.getBalance()).toEqual(randomBalance);
   });
 
   test('should throw SynchronizationFailedError if fetchBalance returned null', async () => {
-    // Write your tests here
+    const randomBalance = 100;
+    const requestFailed = 0;
+    const spy = jest.spyOn(lodash, 'random');
+    spy
+      .mockImplementationOnce(() => {
+        return randomBalance;
+      })
+      .mockImplementationOnce(() => {
+        return requestFailed;
+      });
+
+    const balance = 322;
+    const account = getBankAccount(balance);
+
+    await expect(
+      async () => await account.synchronizeBalance(),
+    ).rejects.toThrow(SynchronizationFailedError);
   });
 });
