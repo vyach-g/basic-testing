@@ -18,9 +18,13 @@ const testCases = [
   { a: 2, b: 1, action: Action.Multiply, expected: 2 },
   { a: 10, b: 2, action: Action.Multiply, expected: 20 },
 
-  { a: 2, b: 2, action: Action.Exponentiate, expected: 4 },
-  { a: 2, b: 1, action: Action.Exponentiate, expected: 2 },
-  { a: 10, b: 2, action: Action.Exponentiate, expected: 100 },
+  { a: 2, b: 2, action: 'action', expected: null },
+  { a: 2, b: 1, action: 'action', expected: null },
+  { a: 10, b: 2, action: 'action', expected: null },
+
+  { a: 'notANumber', b: 'notANumber', action: Action.Add, expected: null },
+  { a: 'notANumber', b: 'notANumber', action: Action.Add, expected: null },
+  { a: 'notANumber', b: 'notANumber', action: Action.Add, expected: null },
 ];
 
 describe('simpleCalculator', () => {
